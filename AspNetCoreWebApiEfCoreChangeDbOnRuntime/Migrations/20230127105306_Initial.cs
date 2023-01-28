@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -11,7 +10,7 @@ namespace AspNetCoreWebApiEfCoreChangeDbOnRuntime.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "Customers",
                 columns: table => new
                 {
@@ -23,10 +22,10 @@ namespace AspNetCoreWebApiEfCoreChangeDbOnRuntime.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Customers", x => x.CustomerId);
+                    _ = table.PrimaryKey("PK_Customers", x => x.CustomerId);
                 });
 
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "Invoices",
                 columns: table => new
                 {
@@ -37,8 +36,8 @@ namespace AspNetCoreWebApiEfCoreChangeDbOnRuntime.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Invoices", x => x.Id);
-                    table.ForeignKey(
+                    _ = table.PrimaryKey("PK_Invoices", x => x.Id);
+                    _ = table.ForeignKey(
                         name: "FK_Invoices_Customers_CustomerId",
                         column: x => x.CustomerId,
                         principalTable: "Customers",
@@ -46,7 +45,7 @@ namespace AspNetCoreWebApiEfCoreChangeDbOnRuntime.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "InvoiceItems",
                 columns: table => new
                 {
@@ -57,8 +56,8 @@ namespace AspNetCoreWebApiEfCoreChangeDbOnRuntime.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_InvoiceItems", x => x.InvoiceItemId);
-                    table.ForeignKey(
+                    _ = table.PrimaryKey("PK_InvoiceItems", x => x.InvoiceItemId);
+                    _ = table.ForeignKey(
                         name: "FK_InvoiceItems_Invoices_InvoiceId",
                         column: x => x.InvoiceId,
                         principalTable: "Invoices",
@@ -66,12 +65,12 @@ namespace AspNetCoreWebApiEfCoreChangeDbOnRuntime.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "IX_InvoiceItems_InvoiceId",
                 table: "InvoiceItems",
                 column: "InvoiceId");
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "IX_Invoices_CustomerId",
                 table: "Invoices",
                 column: "CustomerId");
@@ -80,13 +79,13 @@ namespace AspNetCoreWebApiEfCoreChangeDbOnRuntime.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "InvoiceItems");
 
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "Invoices");
 
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "Customers");
         }
     }

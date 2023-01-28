@@ -20,4 +20,21 @@ public class InvoicesController : Controller
     {
         return await _context.Invoices.ToListAsync(ct);
     }
+
+    [HttpGet("{id:int}")]
+    public async Task<ActionResult<Invoice>> Get(int id, CancellationToken ct)
+    {
+        Invoice? item = await _context.Invoices.SingleOrDefaultAsync(f => f.Id == id, ct);
+
+        return item == null ? (ActionResult<Invoice>)NotFound() : (ActionResult<Invoice>)Ok(item);
+    }
+
+    [HttpPost]
+    public async Task<ActionResult<Invoice>> Add(Invoice invoice, CancellationToken ct)
+    {
+        _ = _context.Invoices.Add(invoice);
+        _ = await _context.SaveChangesAsync(ct);
+
+        return CreatedAtAction(nameof(Get), new { id = invoice.Id }, invoice);
+    }
 }
