@@ -21,15 +21,7 @@ public class MyContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        string? connectionName;
-        StringValues value = default;
-
-        bool? result = _httpContextAccessor.HttpContext?.Request.Headers.TryGetValue(CustomHeaderSwaggerAttribute.HeaderKey, out value);
-
-        connectionName = result.GetValueOrDefault() ? value.FirstOrDefault() : default(ConnectionNames).ToString();
-
-        string? connectionString = _configurationManager[$"ConnectionStrings:{connectionName}"];
-        _ = optionsBuilder.UseSqlite(connectionString);
+        _ = optionsBuilder.UseSqlite(GetConnectionString());
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -37,5 +29,17 @@ public class MyContext : DbContext
         _ = modelBuilder.Entity<Customer>().ToTable("Customers");
         _ = modelBuilder.Entity<Invoice>().ToTable("Invoices");
         _ = modelBuilder.Entity<InvoiceItem>().ToTable("InvoiceItems");
+    }
+
+    private string? GetConnectionString()
+    {
+        string? connectionName;
+        StringValues value = default;
+
+        bool? result = _httpContextAccessor.HttpContext?.Request.Headers.TryGetValue(CustomHeaderSwaggerAttribute.HeaderKey, out value);
+
+        connectionName = result.GetValueOrDefault() ? value.FirstOrDefault() : default(ConnectionNames).ToString();
+
+        return _configurationManager[$"ConnectionStrings:{connectionName}"];
     }
 }
