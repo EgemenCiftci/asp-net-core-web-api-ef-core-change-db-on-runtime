@@ -1,4 +1,5 @@
-﻿using Microsoft.OpenApi.Models;
+﻿using AspNetCoreWebApiEfCoreChangeDbOnRuntime.Enums;
+using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace AspNetCoreWebApiEfCoreChangeDbOnRuntime;
@@ -18,7 +19,8 @@ public class CustomHeaderSwaggerAttribute : IOperationFilter
             Required = true,
             Schema = new OpenApiSchema
             {
-                Type = "string"
+                Type = "string",
+                Description = $"Possible values: {ConnectionNames.Connection0}, {ConnectionNames.Connection1}"
             }
         });
     }

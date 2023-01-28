@@ -11,7 +11,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(f => f.OperationFilter<CustomHeaderSwaggerAttribute>());
 
 builder.Services.AddSingleton(builder.Configuration);
-builder.Services.AddDbContext<MyContext>(ServiceLifetime.Transient);
+builder.Services.AddDbContext<MyContext>();
 
 WebApplication app = builder.Build();
 
