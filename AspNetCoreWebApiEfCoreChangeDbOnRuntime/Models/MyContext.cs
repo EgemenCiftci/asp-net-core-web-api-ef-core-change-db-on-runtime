@@ -9,7 +9,9 @@ public class MyContext : DbContext
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ConfigurationManager _configurationManager;
 
-    public MyContext(DbContextOptions<MyContext> options, IHttpContextAccessor httpContextAccessor, ConfigurationManager configurationManager) : base(options)
+    public MyContext(DbContextOptions<MyContext> options,
+                     IHttpContextAccessor httpContextAccessor,
+                     ConfigurationManager configurationManager) : base(options)
     {
         _httpContextAccessor = httpContextAccessor;
         _configurationManager = configurationManager;
@@ -33,12 +35,18 @@ public class MyContext : DbContext
 
     private string? GetConnectionString()
     {
-        string? connectionName;
+        string? headerKey = _configurationManager["CustomHeaderKey"];
+
+        if (headerKey == null)
+        {
+            throw new ArgumentNullException("CustomerHeaderKey is not defined in appsettings.json file.");
+        }
+
         StringValues value = default;
 
-        bool? result = _httpContextAccessor.HttpContext?.Request.Headers.TryGetValue(CustomHeaderSwaggerAttribute.HeaderKey, out value);
+        bool? result = _httpContextAccessor.HttpContext?.Request.Headers.TryGetValue(headerKey, out value);
 
-        connectionName = result.GetValueOrDefault() ? value.FirstOrDefault() : default(ConnectionNames).ToString();
+        string? connectionName = result.GetValueOrDefault() ? value.FirstOrDefault() : default(ConnectionNames).ToString();
 
         return _configurationManager[$"ConnectionStrings:{connectionName}"];
     }

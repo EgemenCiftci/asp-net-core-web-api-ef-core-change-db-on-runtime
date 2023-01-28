@@ -6,15 +6,22 @@ namespace AspNetCoreWebApiEfCoreChangeDbOnRuntime;
 
 public class CustomHeaderSwaggerAttribute : IOperationFilter
 {
-    public static string HeaderKey = "connection-name";
+    private readonly ConfigurationManager _configurationManager;
+
+    public CustomHeaderSwaggerAttribute(ConfigurationManager configurationManager)
+    {
+        _configurationManager = configurationManager;
+    }
 
     public void Apply(OpenApiOperation operation, OperationFilterContext context)
     {
         operation.Parameters ??= new List<OpenApiParameter>();
 
+        string? headerKey = _configurationManager["CustomHeaderKey"];
+
         operation.Parameters.Add(new OpenApiParameter
         {
-            Name = HeaderKey,
+            Name = headerKey,
             In = ParameterLocation.Header,
             Required = true,
             Schema = new OpenApiSchema
