@@ -1,16 +1,16 @@
 using AspNetCoreWebApiEfCoreChangeDbOnRuntime;
 using AspNetCoreWebApiEfCoreChangeDbOnRuntime.Models;
+using AspNetCoreWebApiEfCoreChangeDbOnRuntime.Services;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpContextAccessor();
 
-// Add services to the container.
+builder.Services.AddSingleton<ConnectionService>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(f => f.OperationFilter<CustomHeaderSwaggerAttribute>());
 
-builder.Services.AddSingleton(builder.Configuration);
 builder.Services.AddDbContext<MyContext>();
 
 WebApplication app = builder.Build();

@@ -1,4 +1,4 @@
-﻿using AspNetCoreWebApiEfCoreChangeDbOnRuntime.Enums;
+﻿using AspNetCoreWebApiEfCoreChangeDbOnRuntime.Services;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
@@ -6,28 +6,29 @@ namespace AspNetCoreWebApiEfCoreChangeDbOnRuntime;
 
 public class CustomHeaderSwaggerAttribute : IOperationFilter
 {
-    private readonly ConfigurationManager _configurationManager;
+    private readonly IConfiguration _configuration;
+    private readonly ConnectionService _connectionService;
 
-    public CustomHeaderSwaggerAttribute(ConfigurationManager configurationManager)
+    public CustomHeaderSwaggerAttribute(IConfiguration configuration,
+                                        ConnectionService connectionService)
     {
-        _configurationManager = configurationManager;
+        _configuration = configuration;
+        _connectionService = connectionService;
     }
 
     public void Apply(OpenApiOperation operation, OperationFilterContext context)
     {
         operation.Parameters ??= new List<OpenApiParameter>();
 
-        string? headerKey = _configurationManager["CustomHeaderKey"];
-
         operation.Parameters.Add(new OpenApiParameter
         {
-            Name = headerKey,
+            Name = _configuration["CustomHeaderKey"],
             In = ParameterLocation.Header,
             Required = true,
             Schema = new OpenApiSchema
             {
                 Type = "string",
-                Description = $"Possible values: {ConnectionNames.Connection0}, {ConnectionNames.Connection1}"
+                Description = $"Possible values: {string.Join(", ", _connectionService.GetConnections())}"
             }
         });
     }

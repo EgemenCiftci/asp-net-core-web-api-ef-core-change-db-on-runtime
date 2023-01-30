@@ -1,4 +1,4 @@
-﻿using AspNetCoreWebApiEfCoreChangeDbOnRuntime.Enums;
+﻿using AspNetCoreWebApiEfCoreChangeDbOnRuntime.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Primitives;
 
@@ -7,14 +7,17 @@ namespace AspNetCoreWebApiEfCoreChangeDbOnRuntime.Models;
 public class MyContext : DbContext
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly ConfigurationManager _configurationManager;
+    private readonly IConfiguration _configuration;
+    private readonly ConnectionService _connectionService;
 
     public MyContext(DbContextOptions<MyContext> options,
                      IHttpContextAccessor httpContextAccessor,
-                     ConfigurationManager configurationManager) : base(options)
+                     IConfiguration configuration,
+                     ConnectionService connectionService) : base(options)
     {
         _httpContextAccessor = httpContextAccessor;
-        _configurationManager = configurationManager;
+        _configuration = configuration;
+        _connectionService = connectionService;
     }
 
     public DbSet<Customer> Customers { get; set; }
@@ -33,9 +36,9 @@ public class MyContext : DbContext
         _ = modelBuilder.Entity<InvoiceItem>().ToTable("InvoiceItems");
     }
 
-    private string? GetConnectionString()
+    private string? GetHeaderValue()
     {
-        string? headerKey = _configurationManager["CustomHeaderKey"];
+        string? headerKey = _configuration["CustomHeaderKey"];
 
         if (headerKey == null)
         {
@@ -46,8 +49,15 @@ public class MyContext : DbContext
 
         bool? result = _httpContextAccessor.HttpContext?.Request.Headers.TryGetValue(headerKey, out value);
 
-        string? connectionName = result.GetValueOrDefault() ? value.FirstOrDefault() : default(ConnectionNames).ToString();
+        return result.GetValueOrDefault() ? value.FirstOrDefault() : null;
+    }
 
-        return _configurationManager[$"ConnectionStrings:{connectionName}"];
+    private string? GetConnectionString()
+    {
+        string? headerValue = GetHeaderValue();
+
+        Connection? connection = _connectionService.GetConnection(headerValue) ?? _connectionService.GetDefaultConnection();
+
+        return connection?.ConnectionString;
     }
 }
