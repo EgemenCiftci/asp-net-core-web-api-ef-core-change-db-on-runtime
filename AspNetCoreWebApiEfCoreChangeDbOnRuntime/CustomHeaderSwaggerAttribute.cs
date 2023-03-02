@@ -1,5 +1,4 @@
-﻿using AspNetCoreWebApiEfCoreChangeDbOnRuntime.Models;
-using AspNetCoreWebApiEfCoreChangeDbOnRuntime.Services;
+﻿using AspNetCoreWebApiEfCoreChangeDbOnRuntime.Services;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;

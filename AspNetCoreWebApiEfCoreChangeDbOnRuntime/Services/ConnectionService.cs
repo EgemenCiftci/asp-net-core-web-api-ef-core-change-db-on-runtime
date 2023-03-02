@@ -13,14 +13,14 @@ public class ConnectionService
 
     public IEnumerable<Connection> GetConnections()
     {
-        var dict = _configuration.GetRequiredSection("Connections").Get<Dictionary<string, Connection>>();
+        Dictionary<string, Connection>? dict = _configuration.GetRequiredSection("Connections").Get<Dictionary<string, Connection>>();
 
         if (dict == null)
         {
             throw new InvalidOperationException("Connections section is missing in appsettings.json.");
         }
 
-        foreach (var item in dict)
+        foreach (KeyValuePair<string, Connection> item in dict)
         {
             item.Value.Name = item.Key;
             item.Value.ConnectionString = _configuration.GetConnectionString(item.Key);
@@ -36,11 +36,6 @@ public class ConnectionService
 
     public Connection? GetConnection(string? name)
     {
-        if (string.IsNullOrWhiteSpace(name))
-        {
-            return null;
-        }
-
-        return GetConnections().FirstOrDefault(f => f.Name == name);
+        return string.IsNullOrWhiteSpace(name) ? null : GetConnections().FirstOrDefault(f => f.Name == name);
     }
 }

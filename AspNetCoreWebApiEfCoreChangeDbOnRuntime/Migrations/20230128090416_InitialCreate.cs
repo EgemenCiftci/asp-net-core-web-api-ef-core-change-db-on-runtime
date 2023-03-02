@@ -10,12 +10,12 @@ namespace AspNetCoreWebApiEfCoreChangeDbOnRuntime.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.RenameColumn(
+            _ = migrationBuilder.RenameColumn(
                 name: "InvoiceItemId",
                 table: "InvoiceItems",
                 newName: "Id");
 
-            migrationBuilder.RenameColumn(
+            _ = migrationBuilder.RenameColumn(
                 name: "CustomerId",
                 table: "Customers",
                 newName: "Id");
@@ -24,12 +24,12 @@ namespace AspNetCoreWebApiEfCoreChangeDbOnRuntime.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.RenameColumn(
+            _ = migrationBuilder.RenameColumn(
                 name: "Id",
                 table: "InvoiceItems",
                 newName: "InvoiceItemId");
 
-            migrationBuilder.RenameColumn(
+            _ = migrationBuilder.RenameColumn(
                 name: "Id",
                 table: "Customers",
                 newName: "CustomerId");
