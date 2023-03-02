@@ -1,4 +1,6 @@
-﻿using AspNetCoreWebApiEfCoreChangeDbOnRuntime.Services;
+﻿using AspNetCoreWebApiEfCoreChangeDbOnRuntime.Models;
+using AspNetCoreWebApiEfCoreChangeDbOnRuntime.Services;
+using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
@@ -20,6 +22,8 @@ public class CustomHeaderSwaggerAttribute : IOperationFilter
     {
         operation.Parameters ??= new List<OpenApiParameter>();
 
+        List<IOpenApiAny> @enum = _connectionService.GetConnections().Select(f => new OpenApiString(f.Name) as IOpenApiAny).ToList();
+
         operation.Parameters.Add(new OpenApiParameter
         {
             Name = _configuration["CustomHeaderKey"],
@@ -28,7 +32,7 @@ public class CustomHeaderSwaggerAttribute : IOperationFilter
             Schema = new OpenApiSchema
             {
                 Type = "string",
-                Description = $"Possible values: {string.Join(", ", _connectionService.GetConnections())}"
+                Enum = @enum
             }
         });
     }
