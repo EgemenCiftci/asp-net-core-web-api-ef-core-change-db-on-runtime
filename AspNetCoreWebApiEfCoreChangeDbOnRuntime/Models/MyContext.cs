@@ -38,13 +38,7 @@ public class MyContext : DbContext
 
     private string? GetHeaderValue()
     {
-        string? headerKey = _configuration["CustomHeaderKey"];
-
-        if (headerKey == null)
-        {
-            throw new ArgumentNullException("CustomerHeaderKey is not defined in appsettings.json file.");
-        }
-
+        string? headerKey = _configuration["CustomHeaderKey"] ?? throw new ArgumentNullException("CustomerHeaderKey is not defined in appsettings.json file.");
         StringValues value = default;
 
         bool? result = _httpContextAccessor.HttpContext?.Request.Headers.TryGetValue(headerKey, out value);
